@@ -53,7 +53,8 @@ export const getStaticProps = async (context) => {
   var id = context.params.id
   const { data, error } = await supabaseAdmin.from('applications').select('*, partner_preferences!inner(*)').eq('nano_id', id) //need to join table to get partner preferences. BUT THERE IS NOTHING IN PARTNER PREFERENCES BECAUSE I NEVER ADD, WHEN REGISTER USER. DID NOT INITIALISE THE VALUE. SO WHEN I GET THE STATE, IT IS UNDEFINED.
   return {
-     props: {item: data}
+    props: { item: data },
+    revalidate: 3
    }
 }
 
@@ -61,20 +62,7 @@ export const getStaticProps = async (context) => {
 export default function Home({ item }) {
   
 
-const router = useRouter()
-  const { id } = router.query
-  async function getStuff() {
-    const { data, error } = await supabaseAdmin.from('applications').select(', partner_preferences!inner()').eq('nano_id', id) //need to join table to get partner preferences. BUT THERE IS NOTHING IN PARTNER PREFERENCES BECAUSE I NEVER ADD, WHEN REGISTER USER. DID NOT INITIALISE THE VALUE. SO WHEN I GET THE STATE, IT IS UNDEFINED.
-    if (data.length !== 0) {
-      setClassInput(data[0].name);
-    setAdmissionIdInput(data[0].admission_id)
-    }
-     
-  }
-
- useEffect(() => {
-  getStuff();
- }, [])
+ 
 
  
  
