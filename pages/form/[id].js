@@ -1,7 +1,8 @@
 import React, { useState, useRef, useMemo, useEffect} from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid';
- 
+ import {useRouter} from "next/router";
+
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -63,7 +64,7 @@ export default function Home({ item }) {
   
 
  
-
+const router = useRouter()
  
  
  //set state of current data in database
@@ -265,13 +266,15 @@ const config = useMemo(
     }  
 }
   
+     
  
- 
+ router.reload(window.location.pathname)
+router.reload(window.location.pathname)
 
-  };//end of submit formm
+   };//end of submit formm
 
   
-
+ 
 
 
 
