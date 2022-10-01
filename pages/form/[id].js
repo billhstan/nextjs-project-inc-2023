@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect} from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid';
-import { useRouter } from 'next/router'
+import { Router } from 'next/router'
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -264,7 +264,9 @@ const config = useMemo(
       console.log(error)
     }  
 }
-    
+  
+  Router.reload(window.location.pathname);
+
   };//end of submit form
 
   
