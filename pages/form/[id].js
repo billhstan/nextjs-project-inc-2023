@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect} from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid';
-import { Router } from 'next/router'
+import Router  from 'next/router'
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -54,7 +54,7 @@ export const getStaticProps = async (context) => {
   const { data, error } = await supabaseAdmin.from('applications').select('*, partner_preferences!inner(*)').eq('nano_id', id) //need to join table to get partner preferences. BUT THERE IS NOTHING IN PARTNER PREFERENCES BECAUSE I NEVER ADD, WHEN REGISTER USER. DID NOT INITIALISE THE VALUE. SO WHEN I GET THE STATE, IT IS UNDEFINED.
   return {
     props: { item: data },
-    revalidate: 0.00001
+    revalidate: 1
    }
 }
 
@@ -265,7 +265,8 @@ const config = useMemo(
     }  
 }
   
-  Router.reload(window.location.pathname);
+    Router.reload(window.location.pathname);
+ 
 
   };//end of submit form
 
