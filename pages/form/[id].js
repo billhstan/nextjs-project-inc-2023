@@ -65,9 +65,11 @@ const router = useRouter()
   const { id } = router.query
   async function getStuff() {
     const { data, error } = await supabaseAdmin.from('applications').select(', partner_preferences!inner()').eq('nano_id', id) //need to join table to get partner preferences. BUT THERE IS NOTHING IN PARTNER PREFERENCES BECAUSE I NEVER ADD, WHEN REGISTER USER. DID NOT INITIALISE THE VALUE. SO WHEN I GET THE STATE, IT IS UNDEFINED.
-    console.log(data[0].name);
-    setClassInput(data[0].name);
+    if (data.length !== 0) {
+      setClassInput(data[0].name);
     setAdmissionIdInput(data[0].admission_id)
+    }
+     
   }
 
  useEffect(() => {
