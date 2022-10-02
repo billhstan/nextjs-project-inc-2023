@@ -33,6 +33,8 @@ const supabaseAdmin =  createClient(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvaHpmdm94eHJldHJ0bWpyZGh3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY2Mjk1NTU5NCwiZXhwIjoxOTc4NTMxNTk0fQ.j-tMNS-yzCUd3ckIZPYV7xMA6zlCVDtU7fC_BHREfTY"
 )
 
+ 
+
 
  
  export const getStaticPaths = async () => {
@@ -53,6 +55,19 @@ const supabaseAdmin =  createClient(
 export const getStaticProps = async (context) => {
   var id = context.params.id
   const { data, error } = await supabaseAdmin.from('applications').select('*, partner_preferences!inner(*)').eq('nano_id', id) //need to join table to get partner preferences. BUT THERE IS NOTHING IN PARTNER PREFERENCES BECAUSE I NEVER ADD, WHEN REGISTER USER. DID NOT INITIALISE THE VALUE. SO WHEN I GET THE STATE, IT IS UNDEFINED.
+  if (data[0] == undefined) { // ** BUG FIXED
+    await supabaseAdmin.from("partner_preferences").insert([ //initialising the state of child tables. so GET wont be undefined
+                                {
+                                    student_insert_id: id, //use the insertData() nano id
+                                    name: '',
+                                    email: '',
+                                    partner_admission_id: '',
+                                    admission_id: ''
+                                    
+      }])
+     
+  }
+ 
   return {
     props: { item: data },
     revalidate: 1
@@ -60,12 +75,11 @@ export const getStaticProps = async (context) => {
 }
 
  
-export default function Home({ item }) {
+export default function Form({ item }) {
   
 
- 
-const router = useRouter()
- 
+ const router = useRouter()
+  
  
  //set state of current data in database
   const [classInput, setClassInput] = useState(item[0].class);
@@ -202,8 +216,8 @@ const config = useMemo(
         technical_interests: technical_interestsInput
       }
     ).eq('nano_id', item[0].nano_id)
-
-    console.log(data)
+    router.reload();
+    
     
 
     if (error) {
@@ -279,9 +293,7 @@ router.reload(window.location.pathname)
 
 
   
-
-
-
+ 
 
 
   return (
