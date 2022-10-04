@@ -203,11 +203,7 @@ const config = useMemo(
                 draggable: true,
                 progress: undefined,
     });
-
-
-    console.log('TESTING')
-    console.log(nameInput)
-    
+ 
     //insert form data to applications table
     const { data, error } = await supabaseAdmin.from("applications").update(
       {
@@ -216,7 +212,7 @@ const config = useMemo(
         technical_interests: technical_interestsInput
       }
     ).eq('nano_id', item[0].nano_id)
-    router.reload();
+   
     
     
 
@@ -233,7 +229,6 @@ const config = useMemo(
       console.log(item[0].nano_id)
       
       if (memberPartnerInputs.length == 0) { // IF THE STUDENT NEVER KEY IN ANY MEMBER PARTNER INPUTS, ADD A BLANK DATA. to make the state not null. if state is empty, it will crash
-        console.log('data length is 0 executed')
         await supabaseAdmin.from("partner_preferences").insert([ //initialising the state of child tables. so GET wont be undefined
                                 {
                                     student_insert_id: item[0].nano_id, //use the insertData() nano id
@@ -281,9 +276,7 @@ const config = useMemo(
 }
   
      
- 
- router.reload(window.location.pathname)
-router.reload(window.location.pathname)
+  
 
    };//end of submit formm
 
