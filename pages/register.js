@@ -227,11 +227,11 @@ export default function Register() {
                                 <div className="flex">
                                     <div>
                                     <p className="font-bold">Email sent.</p>
-                                    <p className="text-sm">Please check your iChat email.</p>
+                                    <p className="text-sm">Please check your iChat email. If you do not receive the email, please email to kohzhenye.16@ichat.sp.edu.sg</p>
                                     </div>
                                 </div>
                     </div> : null}
-                <p className="text-sm font-normal text-gray-600 mt-4 mb-4">If you do not receive the email, please email to kohzhenye.16@ichat.sp.edu.sg</p>
+            
                             
                             
                 {isLoading ? <LoadingSpinner /> : <button onClick={handleSubmit} disabled={isLoading} type="submit" className="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Sign Up</button>}
