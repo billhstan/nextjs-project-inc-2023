@@ -5,7 +5,7 @@ export default function (req, res) {
         service: 'gmail',
         auth: {
           user: 'sp.project.inc@gmail.com',
-          pass: process.env.NEXT_PUBLIC_NODEMAILER_PASSWD || 'vzvp togm tvxt czer'
+          pass: 'vzvp togm tvxt czer'
         }
     });
     const mailOptions = {
