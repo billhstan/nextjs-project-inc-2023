@@ -62,7 +62,7 @@ export default function Register() {
                 draggable: true,
                 progress: undefined,
             });
-      return
+       
     }
     // // if form filled up correctly
     // toast.success("Form submitted!", {
