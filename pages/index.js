@@ -151,11 +151,19 @@ export default function Home() {
               columns: [
               {
                   id: "date",
-                  Header: "Date Created",
+                  Header: "Date Registered",
                   width: 300,
                   accessor: row => `${new Date(row.created_at).toLocaleString("en-sg")}`,
                   filterMethod: (filter, row) =>
                     row._original.created_at.toLowerCase().startsWith(filter.value) 
+                },
+                {
+                  id: "date_update",
+                  Header: "Last Updated",
+                  width: 300,
+                  accessor: row => `${new Date(row.last_updated).toLocaleString("en-sg")}`,
+                  filterMethod: (filter, row) =>
+                    row._original.last_updated.toLowerCase().startsWith(filter.value) 
                 },
                 {
                   id: "name",
@@ -352,7 +360,7 @@ export default function Home() {
               "value": "acc"
             }]}
  
-          defaultPageSize={20}
+          defaultPageSize={10}
           className="-striped -highlight"
           
         /> {/** onFilteredChange={filtered => setData({ filtered })}*/} 

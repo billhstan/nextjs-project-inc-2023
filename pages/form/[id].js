@@ -41,7 +41,6 @@ const supabaseAdmin = createClient(
 
 export const getServerSideProps = async (context) => {
   var id = context.params.id
-  console.log('hello')
   const { data, error } = await supabaseAdmin
     .from('applications')
     .select('*, partner_preferences!inner(*)')
@@ -53,7 +52,7 @@ export const getServerSideProps = async (context) => {
 
 export default function Home({ item }) {
   //set state of current data in database
-  console.log(item,"item")
+  
   const [classInput, setClassInput] = useState(item[0].class)
   const [admission_idInput, setAdmissionIdInput] = useState(
     item[0].admission_id
@@ -118,8 +117,7 @@ export default function Home({ item }) {
 
   //add member partner input field
   var current_partner_preferences = []
-  console.log(item[0].partner_preferences,"EDrfty")
-  if (item[0].partner_preferences) {
+   if (item[0].partner_preferences) {
     for (var i = 0; i < item[0].partner_preferences.length; i++) {
       current_partner_preferences[i] = {
         id: uuidv4(),
@@ -206,6 +204,7 @@ export default function Home({ item }) {
         reason: reasonInput,
         describe_yourself: describe_yourselfInput,
         technical_interests: technical_interestsInput,
+        last_updated: new Date()
       })
       .eq('nano_id', item[0].nano_id)
 
@@ -301,11 +300,13 @@ export default function Home({ item }) {
     <div className="mx-auto max-w-2xl py-16 px-4 lg:max-w-7xl lg:px-8">
       {' '}
       {/*wrapper for all*/}
-      <h1 className="mx-auto max-w-2xl px-4 pt-32 pb-16 text-center text-4xl  font-bold lg:max-w-7xl lg:px-8">
+      <h1 className="mx-auto max-w-2xl px-4 pt-32 pb-12 text-center text-5xl  font-bold lg:max-w-7xl lg:px-8">
         Application for SOC-PROJECT INC PATHWAY
       </h1>
       <h3 className="mx-auto max-w-2xl px-4 pb-16  text-center  font-bold lg:max-w-7xl lg:px-8">
-        Email: {item[0].email}
+        Your Email: {item[0].email}
+        <br></br>
+        Please email to kohzhenye.16@ichat.sp.edu.sg if you encounter any technical issues.
       </h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="overflow-hidden shadow sm:rounded-md">
@@ -320,7 +321,7 @@ export default function Home({ item }) {
                   Name
                 </label>
                 <label className="mb-2  block text-xs tracking-wide text-gray-700">
-                  Full Name
+                  Full Name (As Shown On Admission Card)
                 </label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
@@ -340,13 +341,13 @@ export default function Home({ item }) {
                   Class
                 </label>
                 <label className="mb-2  block text-xs tracking-wide text-gray-700">
-                  Class
+                  DIT/2A/01
                 </label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   id="grid-city"
                   type="text"
-                  placeholder="DIT/2A/01"
+                  placeholder=""
                   name="class"
                   value={classInput}
                   {...register('Class', { required: 'true' })}
@@ -363,12 +364,12 @@ export default function Home({ item }) {
                   Admission Number
                 </label>
                 <label className="mb-2  block text-xs tracking-wide text-gray-700">
-                  Without the "p"
+                  E.g 2000123, without the "p".
                 </label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   type="number"
-                  placeholder="2000000"
+                  placeholder=""
                   value={admission_idInput}
                   {...register('admin_id', { required: 'true' })}
                   onInput={(e) => {
@@ -389,11 +390,12 @@ export default function Home({ item }) {
                 >
                   Mobile
                 </label>
+                <label className="mb-2  block text-xs tracking-wide text-gray-700">E.g 91234567</label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   id="grid-city"
                   type="number"
-                  placeholder="91234567"
+                  placeholder=""
                   name="class"
                   value={mobileInput}
                   {...register('Mobile', { required: 'true' })}
@@ -410,6 +412,7 @@ export default function Home({ item }) {
                 >
                   Email
                 </label>
+                <label className="mb-2  block text-xs tracking-wide text-gray-700">iChat email.</label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   id="grid-city"
@@ -430,6 +433,7 @@ export default function Home({ item }) {
                 >
                   Personal Tutor
                 </label>
+                <label className="mb-2  block text-xs tracking-wide text-gray-700">Full Name of Tutor</label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   id="grid-city"
