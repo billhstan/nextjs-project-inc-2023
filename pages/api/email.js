@@ -1,14 +1,31 @@
 import nodemailer from 'nodemailer';
  
-export default function (req, res) {
+export default async (req, res) => {
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: 'abcinvoice2022@gmail.com',
           pass: 'qutt buhb waln pqje'
+      },
+        secure: true
+    });
+  
+  
+  await new Promise((resolve, reject) => {
+    // verify connection configuration
+    transporter.verify(function (error, success) {
+        if (error) {
+            console.log(error);
+            reject(error);
+        } else {
+            console.log("Server is ready to take our messages");
+            resolve(success);
         }
     });
+});
+  
+  
     const mailOptions = {
         from: 'abcinvoice2022@gmail.com',
         to: req.body.emailTo,
@@ -22,14 +39,20 @@ export default function (req, res) {
     
     };
       
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
+    await new Promise((resolve, reject) => {
+    // send mail
+    transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            console.error(err);
+            reject(err);
         } else {
-          console.log('Email sent: ' + info.response);
+            console.log(info);
+            resolve(info);
         }
     });
-    res.status(200).send("Email successfully sent");
+});
+
+res.status(200).json({ status: "OK" });
 }
 
 /*
