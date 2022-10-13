@@ -99,7 +99,7 @@ export default function Register() {
             // if email exists, return the function
             for (var i = 0; i < emails_data.length; i++) {
                 if (emailInput == emails_data[i].email) {
-                    setIsRegistered(true)
+                    setIsRegistered(true) //set to false for testing
                     return
                 }
             }
