@@ -25,25 +25,13 @@ const supabaseAdmin = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvaHpmdm94eHJldHJ0bWpyZGh3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY2Mjk1NTU5NCwiZXhwIjoxOTc4NTMxNTk0fQ.j-tMNS-yzCUd3ckIZPYV7xMA6zlCVDtU7fC_BHREfTY'
 )
 
-//  export const getStaticPaths = async () => {
-//    const { data, error } = await supabaseAdmin.from('applications').select('email, nano_id') //can remove email??
-//    const paths = data.map(item => {
-//      return {
-//        params: {id: item.nano_id.toString()} // THIS WILL OUTPUT THE ID TO GETSTATICPROPS, context.params.id
-//      }
-//    })
-//    return {
-//      paths,
-//      fallback: false
-//    }
-
-// }
+ 
 
 export const getServerSideProps = async (context) => {
   var id = context.params.id
   const { data, error } = await supabaseAdmin
     .from('applications')
-    .select('*, partner_preferences!inner(*)')
+    .select('*, partner_preferences!inner(*), programming_skills!inner(*)')
     .eq('nano_id', id) //need to join table to get partner preferences. BUT THERE IS NOTHING IN PARTNER PREFERENCES BECAUSE I NEVER ADD, WHEN REGISTER USER. DID NOT INITIALISE THE VALUE. SO WHEN I GET THE STATE, IT IS UNDEFINED.
   return {
     props: { item: data },
@@ -83,10 +71,20 @@ export default function Home({ item }) {
 
   // END Jodi Editor
 
-  //programmingInputs
-  const [programmingInputs, setInputs] = useState([
-    { id: uuidv4(), firstItem: '', secondItem: '' },
-  ])
+  //add programming skills input field
+  var current_programming_skills = []
+   if (item[0].programming_skills) {
+    for (var i = 0; i < item[0].programming_skills.length; i++) {
+      current_programming_skills[i] = {
+        id: uuidv4(),
+        firstItem: item[0].programming_skills[i].languages,
+        secondItem: item[0].programming_skills[i].comments,
+      }
+    }
+  }
+  const [programmingInputs, setInputs] = useState(
+    current_programming_skills //set the member partners state
+  )
 
   const handleChangeInput = (id, event) => {
     const newInputs = programmingInputs.map((i) => {
@@ -114,6 +112,7 @@ export default function Home({ item }) {
     setInputs(values)
   }
   //END programminginputfields
+
 
   //add member partner input field
   var current_partner_preferences = []
@@ -178,7 +177,6 @@ export default function Home({ item }) {
         draggable: true,
         progress: undefined,
       })
-      console.log(1)
       return
     }
     // if form filled up correctly
@@ -219,7 +217,6 @@ export default function Home({ item }) {
         describe_yourself,
         technical_interests,
       } = data[0]
-      console.log(data[0])
       setClassInput(data[0].class)
       setAdmissionIdInput(admission_id)
       setNameInput(name)
@@ -235,18 +232,62 @@ export default function Home({ item }) {
       console.log(error)
     }
 
+
+    
+
     //delete all records in partner preference first. PREVENT DUPLICATE
     await supabaseAdmin
       .from('partner_preferences')
       .delete()
       .eq('student_insert_id', item[0].nano_id)
+    
+    await supabaseAdmin
+      .from('programming_skills')
+      .delete()
+      .eq('student_insert_id', item[0].nano_id)
 
-    const deleteAllPartners = async () => {
-      console.log(item[0].nano_id)
+    
+    
+    
+    
+    const insertProgrammingSkillsData = async () => {
+      if (programmingInputs.length == 0) {
+        // IF THE STUDENT NEVER KEY IN ANY MEMBER PARTNER INPUTS, ADD A BLANK DATA. to make the state not null. if state is empty, it will crash
+        await supabaseAdmin.from('programming_skills').insert([
+          //initialising the state of child tables. so GET wont be undefined
+          {
+            student_insert_id: item[0].nano_id, //use the insertData() nano id
+            languages: '',
+            comments: '',
+          },
+        ])
+      }
+    else {
+        for (let i = 0; i < programmingInputs.length; i++) {
+          const { data,error } = await supabaseAdmin
+            .from('programming_skills')
+            .insert([
+              {
+                languages: programmingInputs[i].firstItem,
+                comments: programmingInputs[i].secondItem,
+                student_insert_id: item[0].nano_id,
+              },
+            ])
+          if (error) {
+            console.log(error)
+          }
+        }
+      }
+    }
+     
+  
+    
+    
+    const insertPartnerPreferencesData = async () => {
 
+      //partner preferences child table
       if (memberPartnerInputs.length == 0) {
         // IF THE STUDENT NEVER KEY IN ANY MEMBER PARTNER INPUTS, ADD A BLANK DATA. to make the state not null. if state is empty, it will crash
-        console.log('data length is 0 executed')
         await supabaseAdmin.from('partner_preferences').insert([
           //initialising the state of child tables. so GET wont be undefined
           {
@@ -271,29 +312,19 @@ export default function Home({ item }) {
               },
             ])
 
-            console.log("data",data)
           if (error) {
             console.log(error)
           }
         }
-      }
+      } 
     }
 
-    deleteAllPartners()
 
-    // insert to programming_skills table
-    for (let i = 0; i < programmingInputs.length; i++) {
-      const { error } = await supabaseAdmin.from('programming_skills').insert([
-        {
-          languages: programmingInputs[i].firstItem,
-          comments: programmingInputs[i].secondItem,
-          student_insert_id: item[0].nano_id,
-        },
-      ])
-      if (error) {
-        console.log(error)
-      }
-    }
+
+    insertPartnerPreferencesData()
+    insertProgrammingSkillsData()
+
+ 
   } //end of submit form
 
   return (
@@ -584,14 +615,14 @@ export default function Home({ item }) {
             {programmingInputs.map((inputField) => (
               <div key={inputField.id}>
                 <input
-                  className="mr-2  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 md:w-1/3 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   placeholder="Languages"
                   name="firstItem"
                   value={inputField.firstItem}
                   onChange={(event) => handleChangeInput(inputField.id, event)}
                 />
                 <input
-                  className="mr-2  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 md:w-1/2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   placeholder="Comments"
                   name="secondItem"
                   value={inputField.secondItem}
@@ -623,7 +654,7 @@ export default function Home({ item }) {
             {memberPartnerInputs.map((inputField) => (
               <div key={inputField.id}>
                 <input
-                  className="mr-2  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 md:w-1/4 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   placeholder="Full Name"
                   name="firstItem"
                   value={inputField.firstItem}
@@ -632,7 +663,7 @@ export default function Home({ item }) {
                   }
                 />
                 <input
-                  className="mr-2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 md:w-1/4 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   placeholder="Email"
                   name="secondItem"
                   value={inputField.secondItem}
@@ -641,7 +672,7 @@ export default function Home({ item }) {
                   }
                 />
                 <input
-                  className="mr-2  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 md:w-1/4 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   type="number"
                   placeholder="Admission ID"
                   name="thirdItem"
@@ -651,17 +682,7 @@ export default function Home({ item }) {
                     handleMemberPartnerInputChangeInput(inputField.id, event)
                   }}
                 />
-                <IconButton
-                  disabled={memberPartnerInputs.length === 1}
-                  onClick={() =>
-                    handleMemberPartnerInputRemoveFields(inputField.id)
-                  }
-                >
-                  <RemoveIcon />
-                </IconButton>
-                <IconButton onClick={handleMemberPartnerInputAddFields}>
-                  <AddIcon />
-                </IconButton>
+            
               </div>
             ))}
           </div>

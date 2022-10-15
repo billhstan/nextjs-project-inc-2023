@@ -5,8 +5,8 @@ export default async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: 'abcinvoice2022@gmail.com',
-          pass: 'qutt buhb waln pqje'
+          user: 'sp.project.inc@gmail.com',
+          pass: 'fhjj wwnc qmlz khzu'
       },
         secure: true
     });
@@ -27,7 +27,7 @@ export default async (req, res) => {
   
   
     const mailOptions = {
-        from: 'abcinvoice2022@gmail.com',
+        from: 'sp.project.inc@gmail.com',
         to: req.body.emailTo,
         subject: `Your Project INC Registration Link`,
         text: `

@@ -81,7 +81,6 @@ export default function Home() {
     }
      
       
-     console.log(matched_students)
 
       //insert to matches table. IT WILL ONLY UPDATE IF STUDENT SUBMITS, then match. It RE-MATCHES the whole table.
        for (var x = 0; x < data.length; x++) {
