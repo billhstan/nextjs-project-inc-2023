@@ -568,7 +568,7 @@ export default function Home({ item }) {
               className="mt-7 mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
               htmlFor="grid-city"
             >
-              Technical interests
+              Technical interests (In which area you plan to be good in)
             </label>
             {/* <textarea {...register("tech_interest", {required: 'true'})}
       className="

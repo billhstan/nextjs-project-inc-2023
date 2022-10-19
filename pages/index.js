@@ -34,13 +34,14 @@ const supabaseAdmin =  createClient(
 
 
 
-
-
-export default function Home() {
-
  
 
+export default function Home() {
+   
 
+ 
+  
+   
 // match students
   const matchStudents = async () => {
 
@@ -55,11 +56,11 @@ export default function Home() {
     }
   deleteAllMatches()
  
-    
+     
+ 
     const { data, error } = await supabaseAdmin.from('applications').select('*, partner_preferences!inner(*), programming_skills!inner(*)')
-     console.log(data)
-
-     var matched_students = []
+ 
+    var matched_students = []
         
      for (var j = 0; j < data.length; j++) { // nested loop, compare every array item with each other
        for (var i = 0;  i < data.length; i++) {
@@ -115,7 +116,7 @@ export default function Home() {
 
  
   const [studentData, setStudentData] = useState()
-
+const [totalApplications, setTotalApplications] = useState()
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleModal() {
@@ -124,12 +125,16 @@ export default function Home() {
  
 
   const getAllData = async () => {
+
     const { data, error } = await supabaseAdmin.from('applications').select('*, partner_preferences!inner(*), programming_skills!inner(*), matches(*)')
+
+    setTotalApplications(Object.keys(data).length)
     setStudentData(data)
+
      if (error) {
       console.log(error)
     }  
-  }
+  }   
   
   getAllData()
    
@@ -137,7 +142,10 @@ export default function Home() {
   return (
     <div className='mx-auto px-4  '> {/*wrapper for all*/}
 
-      <h1 className="text-4xl font-bold text-center mx-auto max-w-2xl pt-16 px-4 lg:max-w-7xl lg:px-8 pb-16">Student Applications for SOC-PROJECT INC PATHWAY</h1>
+      <h1 className="text-4xl font-bold text-center mx-auto max-w-2xl pt-16 px-4 lg:max-w-7xl lg:px-8 pb-8">Student Applications for SOC-PROJECT INC PATHWAY</h1>
+      <h2 className="mx-auto max-w-2xl px-4 pb-8  text-center  font-bold lg:max-w-7xl lg:px-8">
+        Total Applicants: {totalApplications}
+      </h2> 
       <button onClick={matchStudents} className="text-4xl text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Match Students</button>
        
       <div className='mb-6'>
@@ -153,16 +161,14 @@ export default function Home() {
                   Header: "Date Registered",
                   width: 300,
                   accessor: row => `${new Date(row.created_at).toLocaleString("en-sg")}`,
-                  filterMethod: (filter, row) =>
-                    row._original.created_at.toLowerCase().startsWith(filter.value) 
+            
                 },
                 {
                   id: "date_update",
                   Header: "Last Updated",
                   width: 300,
                   accessor: row => `${new Date(row.last_updated).toLocaleString("en-sg")}`,
-                  filterMethod: (filter, row) =>
-                    row._original.last_updated.toLowerCase().startsWith(filter.value) 
+                
                 },
                 {
                   id: "name",
@@ -170,7 +176,7 @@ export default function Home() {
                   width: 300,
                   accessor: row => `${row.name}`,
                   filterMethod: (filter, row) =>
-                    row._original.name.toLowerCase().startsWith(filter.value) 
+                    row._original.name?.toLowerCase().startsWith(filter.value) 
                 },
                 {
                   id: "class",
@@ -178,7 +184,7 @@ export default function Home() {
                   width: 150,
                   accessor: row => `${row.class} `,
                   filterMethod: (filter, row) =>
-                    row._original.class.toLowerCase().startsWith(filter.value)  
+                    row._original.class?.toLowerCase().startsWith(filter.value)  
                 },
                 {
                   id: "admission_id",
@@ -186,7 +192,7 @@ export default function Home() {
                   width: 150,
                   accessor: row => `${row.admission_id}`,
                   filterMethod: (filter, row) =>
-                    row._original.admission_id.toLowerCase().startsWith(filter.value)  
+                    row._original.admission_id?.toLowerCase().startsWith(filter.value)  
                 },
                 {
                   id: "mobile",
@@ -194,7 +200,7 @@ export default function Home() {
                   width: 200,
                   accessor: row => `${row.mobile}`,
                   filterMethod: (filter, row) =>
-                    row._original.mobile.toLowerCase().startsWith(filter.value)   
+                    row._original.mobile?.toLowerCase().startsWith(filter.value)   
                 },
                 {
                   id: "email",
@@ -202,7 +208,7 @@ export default function Home() {
                   width: 300,
                   accessor: row => `${row.email}`,
                   filterMethod: (filter, row) =>
-                    row._original.email.toLowerCase().startsWith(filter.value)  
+                    row._original.email?.toLowerCase().startsWith(filter.value)  
                 },
                 {
                   id: "personal_tutor",
@@ -210,7 +216,7 @@ export default function Home() {
                   width: 300,
                   accessor: row => `${row.personal_tutor}`,
                   filterMethod: (filter, row) =>
-                    row._original.personal_tutor.toLowerCase().startsWith(filter.value)  
+                    row._original.personal_tutor?.toLowerCase().startsWith(filter.value)  
                 }
               ]
             },
@@ -224,7 +230,7 @@ export default function Home() {
                   width: 500,
                   accessor: row => `${row.reason}`,
                   filterMethod: (filter, row) =>
-                    row._original.reason.toLowerCase().startsWith(filter.value),
+                    row._original.reason?.toLowerCase().startsWith(filter.value),
                   Cell: ({row}) => <div dangerouslySetInnerHTML={{__html: row._original.reason}} /> // SET THE TEXT EDITOR HTML
                   
                 },
@@ -235,7 +241,7 @@ export default function Home() {
                   style: {'whiteSpace': 'unset'},
                   accessor: row => `${row.describe_yourself}`,
                   filterMethod: (filter, row) =>
-                    row._original.describe_yourself.toLowerCase().startsWith(filter.value),
+                    row._original.describe_yourself?.toLowerCase().startsWith(filter.value),
                    Cell: ({row}) => <span dangerouslySetInnerHTML={{__html: row._original.describe_yourself}} /> // SET THE TEXT EDITOR HTML
                 },
                 {
@@ -245,7 +251,7 @@ export default function Home() {
                   style: {'whiteSpace': 'unset'},
                   accessor: row => `${row.technical_interests}`,
                   filterMethod: (filter, row) =>
-                    row._original.technical_interests.toLowerCase().startsWith(filter.value),
+                    row._original.technical_interests?.toLowerCase().startsWith(filter.value),
                   Cell: ({row}) =>  <div dangerouslySetInnerHTML={{__html: row._original.technical_interests}} /> 
                 },
                 {
@@ -309,7 +315,7 @@ export default function Home() {
                                 </table>
                     }},
                     filterMethod: (filter, row) =>
-                    row._original.partner_preferences[0].name.toLowerCase().startsWith(filter.value) 
+                    row._original.partner_preferences[0].name?.toLowerCase().startsWith(filter.value) 
                 }
               ]
             },
@@ -341,7 +347,7 @@ export default function Home() {
                                 </table>
                     }},
                     filterMethod: (filter, row) =>
-                    row._original.matches[0].name.toLowerCase().startsWith(filter.value) 
+                    row._original.matches[0].name?.toLowerCase().startsWith(filter.value) 
                 }
               ]
             }

@@ -99,3 +99,10 @@ th {
 .ReactModal__Overlay--before-close {
   opacity: 0;
 }
+
+.rt-tr-group{
+  background: #f2f2f2;
+}
+.rt-tr-group:nth-of-type(even){
+  background: white;
+}
