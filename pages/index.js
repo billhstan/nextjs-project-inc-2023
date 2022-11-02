@@ -1,22 +1,12 @@
 import React, { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { v4 as uuidv4 } from 'uuid';
-
-
+import { nanoid } from 'nanoid'
+ 
+ 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
- 
-
- 
-
-// Import React Table
-import ReactTable from "react-table";
-import "react-table/react-table.css";
-
- 
-
-
+import { useForm } from "react-hook-form";
 
  
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL 
@@ -28,355 +18,233 @@ const supabaseAdmin =  createClient(
 )
 
 
-
-
-
-
-
-
- 
-
-export default function Home() {
-   
-
- 
-  
-   
-// match students
-  const matchStudents = async () => {
-
-    const deleteAllMatches = async () => { 
-      const { data, error } = await supabaseAdmin.from("matches").delete().neq('student_insert_id', '0')
-      if (error) {
-        console.log(error)
-      }
-      if (data) {
-        console.log(data, "deleted")
-      }
-    }
-  deleteAllMatches()
- 
-     
- 
-    const { data, error } = await supabaseAdmin.from('applications').select('*, partner_preferences!inner(*), programming_skills!inner(*)')
- 
-    var matched_students = []
-        
-     for (var j = 0; j < data.length; j++) { // nested loop, compare every array item with each other
-       for (var i = 0;  i < data.length; i++) {
-       if (data) {
-         var result = data[j].partner_preferences.filter(o1 => data[i].partner_preferences.some(o2 => o1.partner_admission_id == o2.admission_id && o1.admission_id == o2.partner_admission_id)); //need the and &&, to match
-         if (result.length !== 0) {
-           matched_students.push(result)
-         }
-       }
-     }
-     }
-     
-
-    // remove duplicates
-     if (matched_students.partner_admission_id) {
-      for (var k = 0; k < matched_students.length; k++) {
-       var matched_students = matched_students.filter((tag, index, array) => array.findIndex(t => t[k].partner_admission_id == tag[k].partner_admission_id) == index);
-     }
-    }
-     
-      
-
-      //insert to matches table. IT WILL ONLY UPDATE IF STUDENT SUBMITS, then match. It RE-MATCHES the whole table.
-       for (var x = 0; x < data.length; x++) {
-         if (data[x]) {
-           for (let i = 0; i < matched_students.length; i++) {
-                if (parseInt(data[x].admission_id) == matched_students[i][0].admission_id) {
-                    
-                    const { error } = await supabaseAdmin.from("matches").insert([
-                    {
-                      admission_id: data[x].admission_id,
-                      partner_admission_id: matched_students[i][0].partner_admission_id,
-                      student_insert_id: data[x].nano_id
-                    }
-                  ])
-                  if (error) {
-                    console.log(error)
-                  } 
-                  }
-                }
-                      }
-                  }  
-
-     if (error) {
-      console.log(error)
-    }  
-  }  // END OF matchStudents()  
-  
-
-
-
-
-
- 
-  const [studentData, setStudentData] = useState()
-const [totalApplications, setTotalApplications] = useState()
-  const [isOpen, setIsOpen] = useState(false);
-
-  function toggleModal() {
-    setIsOpen(!isOpen);
-  }
- 
-
-  const getAllData = async () => {
-
-    const { data, error } = await supabaseAdmin.from('applications').select('*, partner_preferences!inner(*), programming_skills!inner(*), matches(*)')
-
-    setTotalApplications(Object.keys(data).length)
-    setStudentData(data)
-
-     if (error) {
-      console.log(error)
-    }  
-  }   
-  
-  getAllData()
-   
- 
+export  function LoadingSpinner() {
   return (
-    <div className='mx-auto px-4  '> {/*wrapper for all*/}
-
-      <h1 className="text-4xl font-bold text-center mx-auto max-w-2xl pt-16 px-4 lg:max-w-7xl lg:px-8 pb-8">Student Applications for SOC-PROJECT INC PATHWAY</h1>
-      <h2 className="mx-auto max-w-2xl px-4 pb-8  text-center  font-bold lg:max-w-7xl lg:px-8">
-        Total Applicants: {totalApplications}
-      </h2> 
-      <button onClick={matchStudents} className="text-4xl text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Match Students</button>
-       
-      <div className='mb-6'>
-        <ReactTable
-          style={{ overflow: "scroll" }}
-          data={studentData}
-          columns={[
-            {
-              Header: "Personal Information",
-              columns: [
-              {
-                  id: "date",
-                  Header: "Date Registered",
-                  width: 300,
-                  accessor: row => `${new Date(row.created_at).toLocaleString("en-sg")}`,
-            
-                },
-                {
-                  id: "date_update",
-                  Header: "Last Updated",
-                  width: 300,
-                  accessor: row => `${new Date(row.last_updated).toLocaleString("en-sg")}`,
-                
-                },
-                {
-                  id: "name",
-                  Header: "Name",
-                  width: 300,
-                  accessor: row => `${row.name}`,
-                  filterMethod: (filter, row) =>
-                    row._original.name?.toLowerCase().startsWith(filter.value) 
-                },
-                {
-                  id: "class",
-                  Header: "Class",
-                  width: 150,
-                  accessor: row => `${row.class} `,
-                  filterMethod: (filter, row) =>
-                    row._original.class?.toLowerCase().startsWith(filter.value)  
-                },
-                {
-                  id: "admission_id",
-                  Header: "Admission ID",
-                  width: 150,
-                  accessor: row => `${row.admission_id}`,
-                  filterMethod: (filter, row) =>
-                    row._original.admission_id?.toLowerCase().startsWith(filter.value)  
-                },
-                {
-                  id: "mobile",
-                  Header: "Mobile",
-                  width: 200,
-                  accessor: row => `${row.mobile}`,
-                  filterMethod: (filter, row) =>
-                    row._original.mobile?.toLowerCase().startsWith(filter.value)   
-                },
-                {
-                  id: "email",
-                  Header: "Email",
-                  width: 300,
-                  accessor: row => `${row.email}`,
-                  filterMethod: (filter, row) =>
-                    row._original.email?.toLowerCase().startsWith(filter.value)  
-                },
-                {
-                  id: "personal_tutor",
-                  Header: "Personal Tutor",
-                  width: 300,
-                  accessor: row => `${row.personal_tutor}`,
-                  filterMethod: (filter, row) =>
-                    row._original.personal_tutor?.toLowerCase().startsWith(filter.value)  
-                }
-              ]
-            },
-            {
-              Header: "Info",
-              columns: [
-                {
-                 id: "Reason for applying",
-                  Header: "Reason for applying",
-                  style: {'whiteSpace': 'unset'},
-                  width: 500,
-                  accessor: row => `${row.reason}`,
-                  filterMethod: (filter, row) =>
-                    row._original.reason?.toLowerCase().startsWith(filter.value),
-                  Cell: ({row}) => <div dangerouslySetInnerHTML={{__html: row._original.reason}} /> // SET THE TEXT EDITOR HTML
-                  
-                },
-                {
-                 id: "Describe yourself",
-                  Header: "Describe yourself",
-                  width: 500,
-                  style: {'whiteSpace': 'unset'},
-                  accessor: row => `${row.describe_yourself}`,
-                  filterMethod: (filter, row) =>
-                    row._original.describe_yourself?.toLowerCase().startsWith(filter.value),
-                   Cell: ({row}) => <span dangerouslySetInnerHTML={{__html: row._original.describe_yourself}} /> // SET THE TEXT EDITOR HTML
-                },
-                {
-                 id: "Tech interests",
-                  Header: "Tech interests",
-                  width: 500,
-                  style: {'whiteSpace': 'unset'},
-                  accessor: row => `${row.technical_interests}`,
-                  filterMethod: (filter, row) =>
-                    row._original.technical_interests?.toLowerCase().startsWith(filter.value),
-                  Cell: ({row}) =>  <div dangerouslySetInnerHTML={{__html: row._original.technical_interests}} /> 
-                },
-                {
-                 id: "Programming Skills",
-                  Header: "Programming Skills",
-                  width: 800,
-                  style: {'whiteSpace': 'unset'},
-                  //accessor: row => `${row.programming_skills[0].languages, row.programming_skills[0].comments}`,
-                  Cell: (row) => {
-                    if (row.original.programming_skills) {
-                      const programming_skills_data = row.original.programming_skills 
-                    for (var i = 0; i < programming_skills_data.length; i++) {
-                      //"Language: " + programming_skills_data[i].languages + ", --- " +"Comments: "+programming_skills_data[i].comments
-                      return <table>
-                              <tr>
-                                <th>Languages</th>
-                                <th>Comments</th>
-                              </tr>
-                              {programming_skills_data.map(i => (
-                                                <tbody key={i.id}>
-                                                    <tr>
-                                                        <td>{i.languages}</td>
-                                                        <td>{i.comments}</td>
-                                                    </tr>
-                                                </tbody>
-                                            ))}
-                                </table>
-                    }}
-                    }
-                    
-                }
-              ]
-            },
-            {
-              Header: "Member Partner",
-              style: {'whiteSpace': 'unset'},
-              columns: [
-                {
-                 id: "Preferred partner",
-                  Header: "Preferred partners (filter based on FIRST partner name)",
-                  width: 500,
-                  Cell: (row) => {
-                    const partner_data = row.original.partner_preferences
-                    for (var i = 0; i < partner_data.length; i++) {
-                      //"Language: " + programming_skills_data[i].languages + ", --- " +"Comments: "+programming_skills_data[i].comments
-                      return <table>
-                              <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Partner Admission ID</th>
-                              </tr>
-                              {partner_data.map(i => (
-                                                <tbody key={i.id}>
-                                                    <tr>
-                                                        <td>{i.name}</td>
-                                                        <td>{i.email}</td>
-                                                        <td>{i.partner_admission_id}</td>
-                                                    </tr>
-                                                </tbody>
-                                            ))}
-                                </table>
-                    }},
-                    filterMethod: (filter, row) =>
-                    row._original.partner_preferences[0].name?.toLowerCase().startsWith(filter.value) 
-                }
-              ]
-            },
-            {
-              Header: "Matches",
-              style: {'whiteSpace': 'unset'},
-              columns: [
-                {
-                 id: "Matches",
-                  Header: "Matches(filter based on FIRST partner name)",
-                  width: 500,
-                  Cell: (row) => {
-                    const matches_data = row.original.matches
-                    for (var i = 0; i < matches_data.length; i++) {
-                      //"Language: " + programming_skills_data[i].languages + ", --- " +"Comments: "+programming_skills_data[i].comments
-                      return <table>
-                              <tr>
-                           
-                                <th>Partner Admission ID</th>
-                              </tr>
-                              {matches_data.map(i => (
-                                                <tbody key={i.id}>
-                                                    <tr>
-             
-                                                        <td>{i.partner_admission_id}</td>
-                                                    </tr>
-                                                </tbody>
-                                            ))}
-                                </table>
-                    }},
-                    filterMethod: (filter, row) =>
-                    row._original.matches[0].name?.toLowerCase().startsWith(filter.value) 
-                }
-              ]
-            }
-          ]}
-          defaultSorted={[
-            {
-              id: "fullName",
-              desc: false
-            }
-          ]}
-          filterable={true}
-          defaultFiltered={[
-            {
-              "id": "fullName",
-              "value": "acc"
-            }]}
+    <div className="spinner-container">
+      <div className="loading-spinner">
+      </div>
+    </div>
+  );
+}
  
-          defaultPageSize={10}
-          className="-striped -highlight"
-          
-        /> {/** onFilteredChange={filtered => setData({ filtered })}*/} 
-       </div>
-       
 
 
-      
+ 
+export default function Register() {
+
+  const [isLoading, setIsLoading] = useState(false);
+    const [emailInput, setEmailInput] = useState('');
+    const [isRegistered, setIsRegistered] = useState(false)
+    const [emailStatus, setEmailStatus] = useState(false)
+  
+  //react form hook
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm();
+
+
+
+
+
+  const onSubmit = async (e) => {
+    setEmailStatus(false)
+    
+    if (!emailInput.toLowerCase().includes("@ichat.sp.edu.sg")) {
+      toast.error("Please use your ichat email.", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+       return
+    }
+    // // if form filled up correctly
+    // toast.success("Form submitted!", {
+    //             position: "top-center",
+    //             autoClose: 5000,
+    //             hideProgressBar: false,
+    //             closeOnClick: true,
+    //             pauseOnHover: true,
+    //             draggable: true,
+    //             progress: undefined,
+    // });
+    
+
+    setIsLoading(true); //for the form submit button, prevent SPAM
+
+    setTimeout(() => {
+
+      setEmailStatus(true)
+      registerEmail()
+
+      setIsLoading(false) 
+}, 2000) //2 seconds
       
       
     
+    
+      const registerEmail = async () => {
+          //get data from applications table, see if email and nano_id exists
+            const { data, error } = await supabaseAdmin.from('applications').select('email')
+            var emails_data = data
+
+            console.log(emailInput)
+
+            // if email exists, return the function
+            for (var i = 0; i < emails_data.length; i++) {
+                if (emailInput == emails_data[i].email) {
+                    setIsRegistered(true) //set to false for testing
+                    return
+                }
+            }
+
+        
+        
+            //if email dont exist
+        setIsRegistered(false)
+        
+
+
+        const insertData = async () => {
+          const { data, error } = await supabaseAdmin.from("applications").insert([
+                            {
+                                nano_id: nanoid(),
+                                email: emailInput  
+            }])
+            await supabaseAdmin.from("partner_preferences").insert([ //initialising the state of child tables. so GET wont be undefined
+                                {
+                                    student_insert_id: data[0].nano_id, //use the insertData() nano id
+                                    name: '',
+                                    email: '',
+                                    partner_admission_id: '',
+                                    admission_id: ''
+                                    
+              }])
+          await supabaseAdmin.from("programming_skills").insert([ //initialising the state of child tables. so GET wont be undefined
+                                {
+                                    student_insert_id: data[0].nano_id,
+                                    languages: '',
+                                    comments: ''                            
+            }])
+          // await supabaseAdmin.from("matches").insert([ //initialising the state of child tables. so GET wont be undefined
+          //                       {
+          //                           student_insert_id: data[0].nano_id,
+          //                           admission_id: '',
+          //                           partner_admission_id: ''                            
+          //                   }])
+          
+          
+          
+          
+           const sendEmail = () => {
+           
+                fetch('/api/email', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json; charset=UTF-8',
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nano_id_url: data[0].nano_id,
+                        emailTo: emailInput ,
+                    })
+                }).then((res) => {
+                    console.log('Response received')
+                    if (res.status === 200) {
+                        console.log('Response succeeded!')
+                    }
+                })
+          }
+          sendEmail()
+            
+        }
+            
+        insertData()
+            
+            if (error) {
+            console.log(error)
+            } 
+      } //end of registerEmail()
+
+    
+    
+ 
+  
+     
+
+  };//end of submit form
+
+
+
+
+
+
+
+    return (
+      <div>
+         
+ <div className="h-screen flex">
+          <div className="hidden lg:flex w-full lg:w-1/2 login_img_section
+          justify-around items-center">
+            <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
+              <h1 className="text-white font-bold text-4xl font-sans">SP Project INC</h1>
+              <p className="text-white mt-1">Industry Now Curriculum</p>
+            </div>
+          </div>
+          <div className="flex w-full lg:w-1/2 justify-center items-center bg-white space-y-8">
+            <div className="w-full px-8 md:px-32 lg:px-24">
+            <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-md shadow-2xl p-5">
+              <h1 className="text-gray-800 font-bold text-2xl mb-1">Sign Up</h1>
+                <p className="text-sm font-normal text-gray-600 mb-4">Please use your iChat email to sign up.</p>
+          
+               <div className="flex items-center border-2 mb-2 py-2 px-3 rounded-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                                </svg>
+                                
+                <input id="email" className=" pl-2 w-full outline-none border-none" type="email" name="email" placeholder="Email Address"
+                    value={emailInput} {...register("Email", {required: 'true'})}
+                    onInput={e => { setEmailInput(e.target.value); } }/>                   
+                            </div>
+                            
+                            <p className="text-sm font-normal text-gray-600 mb-8">*An email will be sent to you with a URL to fill up the registration form.</p>
+
+                            {isRegistered && emailStatus ? <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <strong className="font-bold">Already registered. </strong>
+                                <span className="block sm:inline">Please check your iChat email for the link that is sent out previously. If you do not receive the email, please email to kohzhenye.16@ichat.sp.edu.sg</span>
+                                <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                    <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                                </span>
+                            </div>
+                                :!isRegistered && emailStatus  ?
+                                <div className="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
+                                <div className="flex">
+                                    <div>
+                                    <p className="font-bold">Email sent.</p>
+                                    <p className="text-sm">Please check your iChat email. If you do not receive the email, please email to kohzhenye.16@ichat.sp.edu.sg</p>
+                                    </div>
+                                </div>
+                    </div> : null}
+            
+                            
+                            
+                {isLoading ? <LoadingSpinner /> : <button onClick={handleSubmit} disabled={isLoading} type="submit" className="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Sign Up</button>}
+              
+              
+              
+            </form>
+            </div>
+            
+          </div>
+      </div>
+        
+ 
    <ToastContainer/>
     </div>
    
