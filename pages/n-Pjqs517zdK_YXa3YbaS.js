@@ -297,7 +297,7 @@ const [totalApplications, setTotalApplications] = useState()
                 {
                  id: "Preferred partner",
                   Header: "Preferred partners (filter based on FIRST partner name)",
-                  width: 500,
+                  width: 800,
                   Cell: (row) => {
                     const partner_data = row.original.partner_preferences
                     for (var i = 0; i < partner_data.length; i++) {
