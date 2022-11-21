@@ -332,12 +332,13 @@ export default function Home({ item }) {
       {' '}
       {/*wrapper for all*/}
       <h1 className="mx-auto max-w-2xl px-4 pt-32 pb-12 text-center text-5xl  font-bold lg:max-w-7xl lg:px-8">
-        Application for SOC-PROJECT INC PATHWAY
+        Registration is closed. Form has been disabled from submitting.
       </h1>
       <h3 className="mx-auto max-w-2xl px-4 pb-16  text-center  font-bold lg:max-w-7xl lg:px-8">
         Your Email: {item[0].email}
         <br></br>
-        Please email to kohzhenye.16@ichat.sp.edu.sg if you encounter any technical issues.
+        Please email to kohzhenye.16@ichat.sp.edu.sg if you encounter any
+        technical issues.
       </h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="overflow-hidden shadow sm:rounded-md">
@@ -421,7 +422,9 @@ export default function Home({ item }) {
                 >
                   Mobile
                 </label>
-                <label className="mb-2  block text-xs tracking-wide text-gray-700">E.g 91234567</label>
+                <label className="mb-2  block text-xs tracking-wide text-gray-700">
+                  E.g 91234567
+                </label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   id="grid-city"
@@ -443,7 +446,9 @@ export default function Home({ item }) {
                 >
                   Email
                 </label>
-                <label className="mb-2  block text-xs tracking-wide text-gray-700">iChat email.</label>
+                <label className="mb-2  block text-xs tracking-wide text-gray-700">
+                  iChat email.
+                </label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   id="grid-city"
@@ -464,7 +469,9 @@ export default function Home({ item }) {
                 >
                   Personal Tutor
                 </label>
-                <label className="mb-2  block text-xs tracking-wide text-gray-700">Full Name of Tutor</label>
+                <label className="mb-2  block text-xs tracking-wide text-gray-700">
+                  Full Name of Tutor
+                </label>
                 <input
                   className="block w-full appearance-none  rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
                   id="grid-city"
@@ -615,14 +622,14 @@ export default function Home({ item }) {
             {programmingInputs.map((inputField) => (
               <div key={inputField.id}>
                 <input
-                  className="mr-2 md:w-1/3 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none md:w-1/3"
                   placeholder="Languages"
                   name="firstItem"
                   value={inputField.firstItem}
                   onChange={(event) => handleChangeInput(inputField.id, event)}
                 />
                 <input
-                  className="mr-2 md:w-1/2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none md:w-1/2"
                   placeholder="Comments"
                   name="secondItem"
                   value={inputField.secondItem}
@@ -654,7 +661,7 @@ export default function Home({ item }) {
             {memberPartnerInputs.map((inputField) => (
               <div key={inputField.id}>
                 <input
-                  className="mr-2 md:w-1/4 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none md:w-1/4"
                   placeholder="Full Name"
                   name="firstItem"
                   value={inputField.firstItem}
@@ -663,7 +670,7 @@ export default function Home({ item }) {
                   }
                 />
                 <input
-                  className="mr-2 md:w-1/4 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none md:w-1/4"
                   placeholder="Email"
                   name="secondItem"
                   value={inputField.secondItem}
@@ -672,7 +679,7 @@ export default function Home({ item }) {
                   }
                 />
                 <input
-                  className="mr-2 md:w-1/4 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 rounded border border-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none md:w-1/4"
                   type="number"
                   placeholder="Admission ID"
                   name="thirdItem"
@@ -682,18 +689,17 @@ export default function Home({ item }) {
                     handleMemberPartnerInputChangeInput(inputField.id, event)
                   }}
                 />
-            
               </div>
             ))}
           </div>
           <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-            <button
+            {/* <button
               onClick={handleSubmit}
               type="submit"
               className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Submit
-            </button>
+            </button> */}
           </div>
         </div>
       </form>
