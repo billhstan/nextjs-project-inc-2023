@@ -178,7 +178,7 @@ export default function Register() {
   
      
 
-  };//end of submit form
+  };//end of submit formm
 
 
 
