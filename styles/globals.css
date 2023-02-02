@@ -4,6 +4,11 @@
 @tailwind utilities;
  
 
+.my-link {
+  color: orange;
+   text-decoration: underline;
+}
+
 html,
   body {
     font-family: 'Lato', sans-serif;

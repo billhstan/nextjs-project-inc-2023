@@ -28,8 +28,6 @@ export  function LoadingSpinner() {
 }
  
 
-
- 
 export default function Register() {
 
   const [isLoading, setIsLoading] = useState(false);
@@ -64,16 +62,7 @@ export default function Register() {
             });
        return
     }
-    // // if form filled up correctly
-    // toast.success("Form submitted!", {
-    //             position: "top-center",
-    //             autoClose: 5000,
-    //             hideProgressBar: false,
-    //             closeOnClick: true,
-    //             pauseOnHover: true,
-    //             draggable: true,
-    //             progress: undefined,
-    // });
+
     
 
     setIsLoading(true); //for the form submit button, prevent SPAM
@@ -105,7 +94,6 @@ export default function Register() {
             }
 
         
-        
             //if email dont exist
         setIsRegistered(false)
         
@@ -132,15 +120,9 @@ export default function Register() {
                                     languages: '',
                                     comments: ''                            
             }])
-          // await supabaseAdmin.from("matches").insert([ //initialising the state of child tables. so GET wont be undefined
-          //                       {
-          //                           student_insert_id: data[0].nano_id,
-          //                           admission_id: '',
-          //                           partner_admission_id: ''                            
-          //                   }])
+  
           
-          
-          
+
           
            const sendEmail = () => {
            
@@ -172,35 +154,37 @@ export default function Register() {
             } 
       } //end of registerEmail()
 
-    
-    
- 
   
-     
 
-  };//end of submit formmm
-
-
-
-
+  };//end of submit form
 
 
 
     return (
       <div>
-         
- <div className="h-screen flex">
-          <div className="hidden lg:flex w-full lg:w-1/2 login_img_section
-          justify-around items-center">
-            <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
-              <h1 className="text-white font-bold text-4xl font-sans">SP Project INC</h1>
-              <p className="text-white mt-1">Industry Now Curriculum</p>
+        <div className="flex h-screen">
+          <div
+            className="login_img_section hidden w-full items-center justify-around
+          lg:flex lg:w-1/2"
+          >
+            <div className="mx-auto w-full flex-col items-center space-y-6 px-20">
+              <h1 className="font-sans text-4xl font-bold text-white">
+                SP Project INC
+              </h1>
+              <p className="mt-1 text-white">Industry Now Curriculum</p>
             </div>
           </div>
-          <div className="flex w-full lg:w-1/2 justify-center items-center bg-white space-y-8">
+          <div className="flex w-full items-center justify-center space-y-8 bg-white lg:w-1/2">
             <div className="w-full px-8 md:px-32 lg:px-24">
-            <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-md shadow-2xl p-5">
-              <h1 className="text-gray-800 font-bold text-2xl mb-1">Registration is closed.</h1>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="rounded-md bg-white p-5 shadow-2xl"
+              >
+                <h1 className="mb-1 text-2xl font-bold text-gray-800">
+                  Registration is closed.
+                </h1>
+
+                {/* "REGISTRATION FORM" START FROM HERE */}
                 {/* <p className="text-sm font-normal text-gray-600 mb-4">Please use your iChat email to sign up.</p>
           
                <div className="flex items-center border-2 mb-2 py-2 px-3 rounded-2xl">
@@ -230,23 +214,15 @@ export default function Register() {
                                     <p className="text-sm">Please check your iChat email. If you do not receive the email, please email to kohzhenye.16@ichat.sp.edu.sg</p>
                                     </div>
                                 </div>
-                    </div> : null}
-            
-                            
-                            
+                    </div> : null}                 
                 {isLoading ? <LoadingSpinner /> : <button onClick={handleSubmit} disabled={isLoading} type="submit" className="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Sign Up</button>} */}
-              
-              
-              
-            </form>
+                {/* "REGISTRATION FORM" END FROM HERE */}
+              </form>
             </div>
-            
           </div>
+        </div>
+
+        <ToastContainer />
       </div>
-        
- 
-   <ToastContainer/>
-    </div>
-   
-  )
+    )
 }

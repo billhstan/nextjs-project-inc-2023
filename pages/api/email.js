@@ -13,7 +13,6 @@ export default async (req, res) => {
   
   
   await new Promise((resolve, reject) => {
-    // verify connection configuration
     transporter.verify(function (error, success) {
         if (error) {
             console.log(error);
@@ -55,24 +54,4 @@ export default async (req, res) => {
 res.status(200).json({ status: "OK" });
 }
 
-/*
-const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'sp.project.inc@gmail.com',
-          pass: 'vzvp togm tvxt czer'
-        }
-    });
-    const mailOptions = {
-        from: 'sp.project.inc@gmail.com',
-        to: req.body.emailTo,
-        subject: `Your Project INC Registration Link`,
-        text: `
-        Hi,
-
-        Please proceed to https://sp-inc-student-application-ccna.vercel.app/form/${req.body.nano_id_url} to complete your registration details.
-        Thank you for signing up! 
-         `,
-    
-    };
-*/
+ 
