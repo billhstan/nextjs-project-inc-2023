@@ -180,12 +180,13 @@ export default function Register() {
                 onSubmit={handleSubmit(onSubmit)}
                 className="rounded-md bg-white p-5 shadow-2xl"
               >
+                
                 <h1 className="mb-1 text-2xl font-bold text-gray-800">
-                  Registration is closed.
+                  Registration
                 </h1>
-
+    
                 {/* "REGISTRATION FORM" START FROM HERE */}
-                {/* <p className="text-sm font-normal text-gray-600 mb-4">Please use your iChat email to sign up.</p>
+                <p className="text-sm font-normal text-gray-600 mb-4">Please use your iChat email to sign up.</p>
           
                <div className="flex items-center border-2 mb-2 py-2 px-3 rounded-2xl">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -215,7 +216,7 @@ export default function Register() {
                                     </div>
                                 </div>
                     </div> : null}                 
-                {isLoading ? <LoadingSpinner /> : <button onClick={handleSubmit} disabled={isLoading} type="submit" className="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Sign Up</button>} */}
+                {isLoading ? <LoadingSpinner /> : <button onClick={handleSubmit} disabled={isLoading} type="submit" className="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Sign Up</button>} 
                 {/* "REGISTRATION FORM" END FROM HERE */}
               </form>
             </div>
