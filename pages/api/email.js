@@ -32,7 +32,7 @@ export default async (req, res) => {
         text: `
         Hi,
 
-        Please proceed to https://sp-inc-student-application-ccna.vercel.app/form/${req.body.nano_id_url} to complete your registration details. Always use this link to update your application details.
+        Please proceed to https://nextjs-project-inc-2023.vercel.app/form/${req.body.nano_id_url} to complete your registration details. Always use this link to update your application details.
         Thank you for signing up! 
          `,
     
